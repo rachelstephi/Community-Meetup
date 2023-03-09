@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Register as Community Admin</title>
+    <style>
+      form {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+      }
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      input[type=text], input[type=email], input[type=password] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      input[type=submit] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        float: right;
+      }
+      input[type=submit]:hover {
+        background-color: #45a049;
+      }
+      .error {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Register as Community Admin</h1>
+    <form action="register.php" method="POST">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" placeholder="Your name" required>
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="Your email address" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Choose a password" required>
+      <input type="submit" value="Register">
+    </form>
+    <script>
+      function validateForm() {
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const errorMessages = document.getElementById("errorMessages");
+        errorMessages.innerHTML = "";
+        let isValid = true;
+        
+        if (name === "") {
+          errorMessages.innerHTML += "<div class='error'>Name is required.</div>";
+          isValid = false;
+        }
+        
+        if (email === "") {
+          errorMessages.innerHTML += "<div class='error'>Email is required.</div>";
+          isValid = false;
+        } else if (!isValidEmail(email)) {
+          errorMessages.innerHTML += "<div class='error'>Email is not valid.</div>";
+          isValid = false;
+        }
+        
+        if (password === "") {
+          errorMessages.innerHTML += "<div class='error'>Password is required.</div>";
+          isValid = false;
+        } else if (password.length < 8) {
+          errorMessages.innerHTML += "<div class='error'>Password must be at least 8 characters long.</div>";
+          isValid = false;
+        }
+        
+        return isValid;
+      }
+      
+      function isValidEmail(email) {
+        // This is a simple email validation using regex
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
