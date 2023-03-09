@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Events</title>
+    <style>
+      .event {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .event h2 {
+        margin-top: 0;
+      }
+      .event p {
+        margin-bottom: 5px;
+      }
+      .event button {
+        margin-top: 10px;
+      }
+      .favorites {
+        margin-top: 20px;
+        font-size: 14px;
+      }
+      .favorites li {
+        margin-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Events</h1>
+
+    <div id="eventsContainer"></div>
+
+    <h2>Favorites</h2>
+
+    <ul id="favoritesList"></ul>
+
+    <script>
+      const eventsContainer = document.getElementById("eventsContainer");
+      const favoritesList = document.getElementById("favoritesList");
+      let favorites = [];
+
+      // Add sample events
+      const events = [
+        {
+          id: 1,
+          title: "Online Webinar on JavaScript",
+          date: "2023-03-15",
+          time: "09:00 AM",
+          location: "Online",
+          description: "Learn the basics of JavaScript in this online webinar.",
+          imageUrl: "https://via.placeholder.com/150x150.png?text=Event+Image"
+        },
+        {
+          id: 2,
+          title: "Music Festival",
+          date: "2023-05-20",
+          time: "12:00 PM",
+          location: "Central Park",
+          description: "Enjoy a day of music in Central Park with your favorite artists.",
+          imageUrl: "https://via.placeholder.com/150x150.png?text=Event+Image"
+        },
+        {
+          id: 3,
+          title: "Art Exhibition",
+          date: "2023-06-10",
+          time: "10:00 AM",
+          location: "Metropolitan Museum of Art",
+          description: "Explore the works of famous artists in this exhibition.",
+          imageUrl: "https://via.placeholder.com/150x150.png?text=Event+Image"
+        }
+      ];
+
+      // Display events
+      let html = "";
+      for (const event of events) {
+        html += `
+          <div class="event">
+            <h2>${event.title}</h2>
+            <p>Date: ${event.date}</p>
+            <p>Time: ${event.time}</p>
+            <p>Location: ${event.location}</p>
+            <p>Description: ${event.description}</p>
+            <img src="${event.imageUrl}">
+            <button data-event-id="${event.id}">Add to Favorites</button>
+          </div>
+        `;
+      }
+      eventsContainer.innerHTML = html;
+
+      // Load favorites from local storage
+      if (localStorage.getItem("favorites")) {
+        favorites = JSON.parse(localStorage.getItem("favorites"));
+        displayFavorites();
+      }
+
+      // Add event listener for "Add to Favorites" button
+      const addToFavoritesButtons = eventsContainer.querySelectorAll("button[data-event-id]");
+      for (const addToFavoritesButton of addToFavoritesButtons) {
+        addToFavoritesButton.addEventListener("click", event => {
+          const eventId = event.target.dataset.eventId;
+          const eventToAdd = events.find(event => event.id == eventId);
+
+          // Add event to favorites
+          favorites.push(eventToAdd);
+
+          // Save favorites to local storage
+         
