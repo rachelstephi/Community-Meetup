@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Join Communities</title>
+    <style>
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      input[type="submit"] {
+        margin-top: 20px;
+      }
+      .error {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+      .community {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .community h2 {
+        margin-top: 0;
+      }
+      .community p {
+        margin-bottom: 5px;
+      }
+      .community button {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Join Communities</h1>
+
+    <form id="searchForm">
+      <label>
+        Search Communities:
+        <input type="text" name="query" required>
+      </label>
+      <input type="submit" value="Search">
+    </form>
+
+    <div id="resultsContainer"></div>
+
+    <div id="joinSuccessMessage" style="display: none;">
+      <p>You have successfully joined the community!</p>
+    </div>
+
+    <div id="joinErrorMessage" style="display: none;">
+      <p>Sorry, something went wrong while joining the community. Please try again later.</p>
+    </div>
+
+    <script>
+      const searchForm = document.getElementById("searchForm");
+      const resultsContainer = document.getElementById("resultsContainer");
+      const joinSuccessMessage = document.getElementById("joinSuccessMessage");
+      const joinErrorMessage = document.getElementById("joinErrorMessage");
+
+      searchForm.addEventListener("submit", event => {
+        event.preventDefault();
+
+        // Gather form data
+        const formData = new FormData(searchForm);
+
+        // Send form data to server for community search
+        fetch("/searchCommunities", {
+          method: "POST",
+          body: formData
+        })
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error("Failed to search communities.");
+            }
+          })
+          .then(communities => {
+            // Display search results
+            let html = "";
+            for (const community of communities) {
+              html += `
+                <div class="community">
+                  <h2>${community.name}</h2>
+                  <p>${community.description}</p>
+                  <button data-community-id="${community.id}">Join Community</button>
+                </div>
+              `;
+            }
+            resultsContainer.innerHTML = html;
+
+            // Add event listener for "Join Community" button
+            const joinButtons = resultsContainer.querySelectorAll("button[data-community-id]");
+            for (const joinButton of joinButtons) {
+              joinButton.addEventListener("click", event => {
+                const communityId = event.target.dataset.communityId;
+
+                // Send community ID to server for joining
+                fetch(`/joinCommunity/${communityId}`, {
+                  method: "POST"
+                })
+                  .then(response => {
+                    if (response.ok) {
+                      joinSuccessMessage.style.display = "block";
+                      joinErrorMessage.style.display = "none";
+                      event.target.disabled = true;
+                    } else {
+                      throw new Error("Failed to join community.");
+                    }
+                  })
+                  .catch(error => {
+                    console.error(error);
+                    joinSuccessMessage.style.display = "none";
+                    joinErrorMessage.style.display = "block";
+                  });
+              });
+            }
+          })
+          .catch(error
