@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Event Management</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .event {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .event-info {
+        display: flex;
+        flex-direction: column;
+        margin-right: 10px;
+      }
+      .event-info span {
+        margin-bottom: 5px;
+      }
+      .event-actions {
+        display: flex;
+        flex-direction: column;
+      }
+      .event-actions button {
+        margin-bottom: 5px;
+      }
+      form {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+      }
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      input[type=text], input[type=datetime-local] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      input[type=submit] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        float: right;
+      }
+      input[type=submit]:hover {
+        background-color: #45a049;
+      }
+      .error {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Event Management</h1>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Date and Time</th>
+        <th>Type</th>
+        <th>Actions</th>
+      </tr>
+      <tbody id="eventsTable">
+        <!-- Event rows will be added dynamically using JavaScript -->
+      </tbody>
+    </table>
+    <div id="addEventForm">
+      <h2>Add Event</h2>
+      <form id="eventForm" onsubmit="return addEvent()">
+        <label for="eventName">Event Name</label>
+        <input type="text" id="eventName" name="eventName" placeholder="Enter event name" required>
+        <label for="eventDateTime">Date and Time</label>
+        <input type="datetime-local" id="eventDateTime" name="eventDateTime" required>
+        <label for="eventType">Event Type</label>
+        <select id="eventType" name="eventType">
+          <option value="online">Online</option>
+          <option value="offline">Offline</option>
+        </select>
+        <div id="errorMessages"></div>
+        <input type="submit" value="Add Event">
+      </form>
+    </div>
+    <script>
+      const events = [];
+
+      function renderEventsTable() {
+        const eventsTable = document.getElementById("eventsTable");
+        eventsTable.innerHTML = "";
+
+        events.forEach(event => {
+          const tr
