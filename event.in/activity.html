@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>After-Event Activities</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .error {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>After-Event Activities</h1>
+    <h2 id="eventName"></h2>
+    <form>
+      <label>
+        Activity Name:
+        <input type="text" name="activityName" required>
+      </label>
+      <br>
+      <label>
+        Activity Date:
+        <input type="date" name="activityDate" required>
+      </label>
+      <br>
+      <label>
+        Activity Description:
+        <textarea name="activityDescription" rows="5" required></textarea>
+      </label>
+      <br>
+      <button type="submit">Add Activity</button>
+    </form>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Date</th>
+        <th>Description</th>
+      </tr>
+      <tbody id="activitiesTable">
+        <!-- Activities rows will be added dynamically using JavaScript -->
+      </tbody>
+    </table>
+    <script>
+      // Get event ID from URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const eventId = urlParams.get('eventId');
+
+      // Get event details and activities from server
+      fetch(`/events/${eventId}`)
+        .then(response => response.json())
+        .then(event => {
+          document.getElementById("eventName").textContent = event.name;
+
+          const activitiesTable = document.getElementById("activitiesTable");
+          activitiesTable.innerHTML = "";
+
+          event.activities.forEach(activity => {
+            const tr = document.createElement("tr");
+            const nameTd = document.createElement("td");
+            const dateTd = document.createElement("td");
+            const descriptionTd = document.createElement("td");
+
+            nameTd.textContent = activity.name;
+            dateTd.textContent = activity.date;
+            descriptionTd.textContent = activity.description;
+
+            tr.appendChild(nameTd);
+            tr.appendChild(dateTd);
+            tr.appendChild(descriptionTd);
+
+            activitiesTable.appendChild(tr);
+          });
+        })
+        .catch(error => {
+          console.error(error);
+          const errorDiv = document.createElement("div");
+          errorDiv.classList.add("error");
+          errorDiv.textContent = "Failed to load event details and activities.";
+          document.body.appendChild(errorDiv);
+        });
+
+      // Handle form submission to add a new activity
+      const form = document.querySelector("form");
+      form.addEventListener("submit", event => {
+        event.preventDefault();
+        const activityName = form.elements.activityName.value;
+        const activityDate = form.elements.activityDate.value;
+        const activityDescription = form.elements.activityDescription.value;
+
+        const newActivity = {
+          name: activityName,
+          date: activityDate,
+          description: activityDescription
+        };
+
+        fetch(`/events/${eventId}/activities`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(newActivity)
+        })
+        .then(response => response.json())
+        .then(activity => {
+          const tr = document.createElement("tr");
+          const nameTd = document.createElement("td");
+          const dateTd =
