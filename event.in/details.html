@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Event Management</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .error {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Event Management</h1>
+    <h2 id="eventName"></h2>
+
+    <h3>Participants</h3>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+      </tr>
+      <tbody id="participantsTable">
+        <!-- Participant rows will be added dynamically using JavaScript -->
+      </tbody>
+    </table>
+
+    <h3>Event Photos</h3>
+    <form>
+      <label>
+        Photo URL:
+        <input type="url" name="photoUrl" required>
+      </label>
+      <br>
+      <button type="submit">Add Photo</button>
+    </form>
+    <div id="photosContainer">
+      <!-- Event photos will be added dynamically using JavaScript -->
+    </div>
+
+    <h3>Event Summary</h3>
+    <form>
+      <label>
+        Summary:
+        <textarea name="summary" rows="5" required></textarea>
+      </label>
+      <br>
+      <button type="submit">Save Summary</button>
+    </form>
+    <div id="summaryContainer">
+      <!-- Event summary will be added dynamically using JavaScript -->
+    </div>
+
+    <script>
+      // Get event ID from URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const eventId = urlParams.get('eventId');
+
+      // Get event details and participants from server
+      fetch(`/events/${eventId}`)
+        .then(response => response.json())
+        .then(event => {
+          document.getElementById("eventName").textContent = event.name;
+
+          const participantsTable = document.getElementById("participantsTable");
+          participantsTable.innerHTML = "";
+
+          event.participants.forEach(participant => {
+            const tr = document.createElement("tr");
+            const nameTd = document.createElement("td");
+            const emailTd = document.createElement("td");
+            const phoneTd = document.createElement("td");
+
+            nameTd.textContent = participant.name;
+            emailTd.textContent = participant.email;
+            phoneTd.textContent = participant.phone;
+
+            tr.appendChild(nameTd);
+            tr.appendChild(emailTd);
+            tr.appendChild(phoneTd);
+
+            participantsTable.appendChild(tr);
+          });
+
+          const photosContainer = document.getElementById("photosContainer");
+          event.photos.forEach(photoUrl => {
+            const img = document.createElement("img");
+            img.src = photoUrl;
+            img.alt = "Event photo";
+            photosContainer.appendChild(img);
+          });
+
+          const summaryContainer = document.getElementById("summaryContainer");
+          const summaryParagraph = document.createElement("p");
+          summaryParagraph.textContent = event.summary;
+          summaryContainer.appendChild(summaryParagraph);
+        })
+        .catch(error => {
+          console.error(error);
+          const errorDiv = document.createElement("div");
+          errorDiv.classList.add("error");
+          errorDiv.textContent = "Failed to load event details and participants.";
+          document.body.appendChild(errorDiv);
+        });
+
+      // Handle form submission to add a new photo
