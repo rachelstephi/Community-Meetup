@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Promote as Coordinator</title>
+    <style>
+      form {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+      }
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      input[type=text] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      input[type=submit] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        float: right;
+      }
+      input[type=submit]:hover {
+        background-color: #45a049;
+      }
+      .error {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Promote as Coordinator</h1>
+    <form id="promotionForm" action="promote.php" method="POST" onsubmit="return validateForm()">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" placeholder="Person's name" required>
+      <div id="errorMessages"></div>
+      <input type="submit" value="Promote">
+    </form>
+    <script>
+      function validateForm() {
+        const name = document.getElementById("name").value.trim();
+        const errorMessages = document.getElementById("errorMessages");
+        errorMessages.innerHTML = "";
+        let isValid = true;
+        
+        if (name === "") {
+          errorMessages.innerHTML += "<div class='error'>Name is required.</div>";
+          isValid = false;
+        }
+        
+        return isValid;
+      }
+    </script>
+  </body>
+</html>
