@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Event RSVPs</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .error {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Event RSVPs</h1>
+    <h2 id="eventName"></h2>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+      </tr>
+      <tbody id="rsvpsTable">
+        <!-- RSVP rows will be added dynamically using JavaScript -->
+      </tbody>
+    </table>
+    <script>
+      // Get event ID from URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const eventId = urlParams.get('eventId');
+
+      // Get event details and RSVPs from server
+      fetch(`/events/${eventId}`)
+        .then(response => response.json())
+        .then(event => {
+          document.getElementById("eventName").textContent = event.name;
+
+          const rsvpsTable = document.getElementById("rsvpsTable");
+          rsvpsTable.innerHTML = "";
+
+          event.rsvps.forEach(rsvp => {
+            const tr = document.createElement("tr");
+            const nameTd = document.createElement("td");
+            const emailTd = document.createElement("td");
+
+            nameTd.textContent = rsvp.name;
+            emailTd.textContent = rsvp.email;
+
+            tr.appendChild(nameTd);
+            tr.appendChild(emailTd);
+
+            rsvpsTable.appendChild(tr);
+          });
+        })
+        .catch(error => {
+          console.error(error);
+          const errorDiv = document.createElement("div");
+          errorDiv.classList.add("error");
+          errorDiv.textContent = "Failed to load event details and RSVPs.";
+          document.body.appendChild(errorDiv);
+        });
+    </script>
+  </body>
+</html>
